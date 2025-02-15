@@ -5,7 +5,7 @@ import Sidebar from "../components/Sidebar";
 import PreviewDomain from "../components/PreviewDomain";
 
 const Dashboard = () => {
-  // const { loading } = useAuth();
+  const { loading } = useAuth();
 
   // if (loading) return <Loading />;
   return (

@@ -7,7 +7,7 @@ const domainSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    tags: { type: [String], default: ["all"] },
+    tags: { type: [String], default: ["All"] },
     description: String,
   },
   { timestamps: true }

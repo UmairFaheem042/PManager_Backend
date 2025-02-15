@@ -30,4 +30,6 @@ router.get("/:domainId", userAuthenticate, getSingleDomain);
 router.delete("/delete/:domainId", userAuthenticate, deleteDomain);
 router.put("/update/:domainId", userAuthenticate, updateDomain);
 
+router.post("/search", userAuthenticate, searchDomain);
+
 module.exports = router;

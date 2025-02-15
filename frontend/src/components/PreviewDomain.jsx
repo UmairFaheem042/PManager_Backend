@@ -3,7 +3,8 @@ import Button from "./Button";
 import { useAuth } from "../context/UserContext";
 
 const PreviewDomain = () => {
-  const { previewDomain, loading, updateDomain } = useAuth();
+  const { selectedDomain, previewDomain, loading, deleteDomain, updateDomain } =
+    useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -37,13 +38,21 @@ const PreviewDomain = () => {
 
   function handleEditing() {
     if (isEditing) {
-      // ! WORK NEEDS TO BE DONE as domainDetail have only 5 fields but previewDomain have 2 extra fields of timestamp
-      // ! therefore everytime these two will be different
-      if (JSON.stringify(domainDetail) !== JSON.stringify(previewDomain))
+      const filteredPreview = Object.keys(domainDetail).reduce((obj, key) => {
+        obj[key] = previewDomain[key];
+        return obj;
+      }, {});
+
+      if (JSON.stringify(domainDetail) !== JSON.stringify(filteredPreview)) {
         updateDomain(domainDetail);
+      }
     }
 
     setIsEditing((prev) => !prev);
+  }
+
+  async function handleDelete() {
+    deleteDomain(selectedDomain);
   }
 
   function handleShowPassword() {
@@ -84,7 +93,7 @@ const PreviewDomain = () => {
               }
               disabled={!isEditing}
             />
-            <div className="flex items-start h-full pt-[0.05rem]">
+            <div className="flex gap-2 items-start h-full pt-[0.05rem]">
               <Button
                 customClass={
                   "bg-purple-400 text-white hover:bg-purple-700 active:bg-purple-700 focus:bg-purple-700 flex gap-2"
@@ -97,6 +106,16 @@ const PreviewDomain = () => {
                 ) : (
                   <i className="ri-pencil-line"></i>
                 )}
+              </Button>
+
+              <Button
+                customClass={
+                  "bg-red-400 text-white hover:bg-red-700 active:bg-red-700 focus:bg-red-700 flex gap-2"
+                }
+                handleClick={handleDelete}
+                label={"Delete"}
+              >
+                <i className="ri-delete-bin-7-line"></i>
               </Button>
             </div>
           </div>

@@ -4,23 +4,33 @@ import axios from "axios";
 const AuthContext = createContext();
 
 export function AppProvider({ children }) {
-  // const [user, setUser] = useState(null);
   const [domains, setDomains] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [previewLoading, setPreviewLoading] = useState(true);
   const [selectedDomain, setSelectedDomain] = useState("");
   const [previewDomain, setPreviewDomain] = useState(null);
 
-  // async function fetchUser() {
-  //   try {
-  //     const response = await axios.get("http://localhost:3000/api/v1/users", {
-  //       withCredentials: true,
-  //     });
-  //     setUser(response.data.user);
-  //   } catch (error) {
-  //     console.log("Unable to fetch user", error);
-  //   }
-  // }
+  async function createDomain(formDataToSend, setIsOpen) {
+    setLoading(true);
+    console.log("Data received in createDomain:", formDataToSend.entries());
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/domains/create",
+        formDataToSend,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Domain created successfully");
+      setIsOpen(false);
+      await fetchAllDomains();
+      setLoading(false);
+    } catch (error) {
+      console.log("Unable to create new domain", error);
+    }
+  }
 
   async function fetchAllDomains() {
     try {
@@ -47,11 +57,27 @@ export function AppProvider({ children }) {
       console.log("Unable to fetch selected domain", error);
     } finally {
       setLoading(false);
-      // setPreviewLoading(false);
     }
   }
 
+  async function deleteDomain(domainId) {
+    try {
+      setLoading(true);
+      const response = await axios.delete(
+        `http://localhost:3000/api/v1/domains/delete/${domainId}`,
+        { withCredentials: true }
+      );
+      console.log("Domain deleted successfully");
+      setSelectedDomain("");
+      fetchAllDomains();
+    } catch (error) {
+      console.log("Unable to delete domain", error);
+    }
+    setLoading(false);
+  }
+
   async function updateDomain(updatedData) {
+    console.log(updatedData);
     if (!selectedDomain) return;
     console.log("from updateDOmain function: ", updatedData);
     try {
@@ -70,7 +96,6 @@ export function AppProvider({ children }) {
 
   useEffect(() => {
     async function fetchData() {
-      // await fetchUser();
       await fetchAllDomains();
       setLoading(false);
     }
@@ -84,16 +109,16 @@ export function AppProvider({ children }) {
   return (
     <AuthContext.Provider
       value={{
-        // user,
-        // setUser,
-        updateDomain,
         domains,
         setDomains,
+        createDomain,
+        fetchAllDomains,
+        deleteDomain,
+        updateDomain,
         selectedDomain,
         setSelectedDomain,
         previewDomain,
         loading,
-        previewLoading,
       }}
     >
       {children}

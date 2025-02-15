@@ -40,21 +40,11 @@ exports.createDomain = async (req, res) => {
     });
     const imageUrl = result.secure_url;
 
-    //! EARLIER VERSION
-    // tags.split().forEach((element) => {
-    //   element.toLowerCase();
-    // });
-
-    // ! NEW VERSION
     const formattedTags = tags
       .split(",")
       .map((tag) => tag.charAt(0).toUpperCase() + tag.slice(1))
       .sort();
     const newTags = [...new Set(["All", ...formattedTags])];
-
-    // let tagList = tags.split(" ");
-    // const newTags = [...new Set(["all", ...tags])];
-
     const newDomain = await Domain.create({
       user: id,
       icon: imageUrl,
@@ -90,7 +80,6 @@ exports.createDomain = async (req, res) => {
 exports.getAllDomain = async (req, res) => {
   try {
     const { id } = req.user;
-    console.log(id);
     const userDomains = await User.findById(id)
       .select("-password")
       .populate("domains", "_id name icon email");
@@ -174,7 +163,7 @@ exports.updateDomain = async (req, res) => {
     //   element[0].toUpperCase() + element.substring(1);
     // });
 
-    const newTags = [...new Set(["all", ...tags])];
+    const newTags = [...new Set(["All", ...tags])];
 
     const updatedDomain = await Domain.findByIdAndUpdate(
       domainId,

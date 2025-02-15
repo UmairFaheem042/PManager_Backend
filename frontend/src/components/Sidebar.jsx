@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import { useAuth } from "../context/UserContext";
+import AddDomain from "./AddDomain";
 
 const Sidebar = () => {
-  const { domains, selectedDomain, setSelectedDomain, loading } = useAuth();
+  const {
+    domains,
+    selectedDomain,
+    setSelectedDomain,
+    loading,
+    isModalOpen,
+    setIsModalOpen,
+  } = useAuth();
+
+  const [isOpen, setIsOpen] = useState(false);
 
   function handleOptionClick(domainId) {
     setSelectedDomain(domainId);
@@ -46,7 +56,10 @@ const Sidebar = () => {
         {domains.map((domain) => (
           <li
             key={domain?._id}
-            className={`text-[0.85rem] lg:text-sm hover:bg-gray-50 p-2 rounded-lg cursor-pointer flex justify-between items-center ${domain?._id === selectedDomain && "border border-gray-200 bg-gray-50"}`}
+            className={`text-[0.85rem] lg:text-sm hover:bg-gray-50 p-2 rounded-lg cursor-pointer flex justify-between items-center ${
+              domain?._id === selectedDomain &&
+              "border border-gray-200 bg-gray-50"
+            }`}
             onClick={() => handleOptionClick(domain?._id)}
           >
             <div className="flex items-center gap-2">
@@ -71,6 +84,16 @@ const Sidebar = () => {
           </li>
         ))}
       </ul>
+
+      <button
+        className="w-full bg-green-400 text-white hover:bg-green-700 active:bg-green-700 focus:bg-green-700 font-medium cursor-pointer px-6 py-2 rounded-lg outline-none"
+        onClick={() => setIsOpen(true)}
+      >
+        Add
+      </button>
+
+      {/* <AddDomain /> */}
+      <AddDomain isOpen={isOpen} setIsOpen={setIsOpen} />
     </aside>
   );
 };
