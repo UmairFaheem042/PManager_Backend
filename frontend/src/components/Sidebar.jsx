@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "./Button";
 import { useAuth } from "../context/UserContext";
 import AddDomain from "./AddDomain";
@@ -9,14 +9,29 @@ const Sidebar = () => {
     selectedDomain,
     setSelectedDomain,
     loading,
-    isModalOpen,
-    setIsModalOpen,
+    searchDomain,
+    setQuery,
+    query,
   } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [sortBy, setSortBy] = useState("name");
+  // const [query, setQuery] = useState("");
 
   function handleOptionClick(domainId) {
     setSelectedDomain(domainId);
+  }
+
+  const sortedDomains = domains?.slice().sort((a, b) => {
+    if (sortBy === "name") {
+      return a.name.localeCompare(b.name);
+    } else {
+      return new Date(a.createdAt) - new Date(b.createdAt);
+    }
+  });
+
+  function handleSearch() {
+    searchDomain();
   }
 
   if (loading)
@@ -33,27 +48,42 @@ const Sidebar = () => {
           type="text"
           className="border border-gray-200 text-sm w-full outline-none rounded-md p-2 placeholder:text-gray-300 focus:bg-purple-50 active:bg-purple-50"
           placeholder="search with name and tags"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
         />
         <Button
           label={"S"}
           customClass={
             "bg-purple-400 text-white hover:bg-purple-700 active:bg-purple-700 focus:bg-purple-700"
           }
+          handleClick={handleSearch}
         />
       </div>
 
       <div className="mt-4 text-sm text-gray-500 flex items-center gap-2">
         <span>Sort By: </span>
         <p className="flex gap-2">
-          <span className="active cursor-pointer">Name</span>
-          <span className="cursor-pointer">Date</span>
+          <span
+            className={`cursor-pointer ${
+              sortBy === "name" && "text-purple-400"
+            }`}
+            onClick={() => setSortBy("name")}
+          >
+            Name
+          </span>
+          <span
+            className={`cursor-pointer ${
+              sortBy === "date" && "text-purple-400"
+            }`}
+            onClick={() => setSortBy("date")}
+          >
+            Date
+          </span>
         </p>
       </div>
 
-      {/* <h1 className="mt-4 text-gray-400">Showing <span className="text-black">All domains</span></h1> */}
-
       <ul className="mt-4 flex flex-col gap-2 h-[65vh] overflow-y-scroll">
-        {domains.map((domain) => (
+        {sortedDomains.map((domain) => (
           <li
             key={domain?._id}
             className={`text-[0.85rem] lg:text-sm hover:bg-gray-50 p-2 rounded-lg cursor-pointer flex justify-between items-center ${

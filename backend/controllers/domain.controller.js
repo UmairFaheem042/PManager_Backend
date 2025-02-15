@@ -82,7 +82,11 @@ exports.getAllDomain = async (req, res) => {
     const { id } = req.user;
     const userDomains = await User.findById(id)
       .select("-password")
-      .populate("domains", "_id name icon email");
+      .populate({
+        path: "domains",
+        select: "_id name icon email createdAt updatedAt",
+        options: { sort: { name: 1 } },
+      });
     if (!userDomains)
       return res.status(404).json({ message: "User not found" });
 
@@ -201,24 +205,24 @@ exports.updateDomain = async (req, res) => {
 // query search(optional)
 exports.searchDomain = async (req, res) => {
   try {
-    const { query, tags } = req.query;
+    const { query } = req.query;
+    const { id } = req.user;
 
-    const filter = {};
+    let filter = { user: id };
 
-    // Add name search if query exists
     if (query && query.trim() !== "") {
-      filter.name = { $regex: query, $options: "i" };
+      filter = {
+        user: id,
+        $or: [
+          { name: { $regex: query, $options: "i" } },
+          { tags: { $regex: query, $options: "i" } },
+        ],
+      };
     }
 
-    // Add tags filter if tags exist
-    if (tags) {
-      const tagsArray = tags.split(",").map((tag) => tag.trim());
-      if (tagsArray.length > 0) {
-        filter.tags = { $in: tagsArray };
-      }
-    }
-
-    const domains = await Domain.find(filter).sort({ createdAt: -1 });
+    const domains = await Domain.find(filter)
+      .select('_id name icon email createdAt updatedAt')
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,

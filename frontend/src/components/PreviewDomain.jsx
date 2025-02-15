@@ -52,7 +52,8 @@ const PreviewDomain = () => {
   }
 
   async function handleDelete() {
-    deleteDomain(selectedDomain);
+    const confirmDelete = confirm("Do you really want to delete?");
+    if (confirmDelete) deleteDomain(selectedDomain);
   }
 
   function handleShowPassword() {

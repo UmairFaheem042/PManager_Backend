@@ -8,6 +8,8 @@ export function AppProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [selectedDomain, setSelectedDomain] = useState("");
   const [previewDomain, setPreviewDomain] = useState(null);
+  const [query, setQuery] = useState("");
+  // const [searchedDomain, setSearchedDomain] = useState()
 
   async function createDomain(formDataToSend, setIsOpen) {
     setLoading(true);
@@ -69,6 +71,7 @@ export function AppProvider({ children }) {
       );
       console.log("Domain deleted successfully");
       setSelectedDomain("");
+      setPreviewDomain(null);
       fetchAllDomains();
     } catch (error) {
       console.log("Unable to delete domain", error);
@@ -77,9 +80,7 @@ export function AppProvider({ children }) {
   }
 
   async function updateDomain(updatedData) {
-    console.log(updatedData);
     if (!selectedDomain) return;
-    console.log("from updateDOmain function: ", updatedData);
     try {
       const response = await axios.put(
         `http://localhost:3000/api/v1/domains/update/${selectedDomain}`,
@@ -87,10 +88,23 @@ export function AppProvider({ children }) {
         { withCredentials: true }
       );
       if (response.data.success) {
-        setPreviewDomain(response.data.updatedDomain); // Update state
+        setPreviewDomain(response.data.updatedDomain);
       }
     } catch (error) {
       console.log("Unable to update domain", error);
+    }
+  }
+
+  async function searchDomain() {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/v1/domains/search?query=${query}`,
+        { withCredentials: true }
+      );
+      console.log(response.data.data);
+      setDomains(response.data.data);
+    } catch (error) {
+      console.error("Error searching domains:", error);
     }
   }
 
@@ -100,11 +114,14 @@ export function AppProvider({ children }) {
       setLoading(false);
     }
     fetchData();
-  }, []);
+    // if (query === "") fetchAllDomains();
+  }, [query]);
 
   useEffect(() => {
     fetchSelectedDomain();
   }, [selectedDomain]);
+
+  // console.log(domains);
 
   return (
     <AuthContext.Provider
@@ -119,6 +136,9 @@ export function AppProvider({ children }) {
         setSelectedDomain,
         previewDomain,
         loading,
+        searchDomain,
+        setQuery,
+        query,
       }}
     >
       {children}
@@ -126,7 +146,6 @@ export function AppProvider({ children }) {
   );
 }
 
-// Custom hook to use AuthContext
 export function useAuth() {
   return useContext(AuthContext);
 }
