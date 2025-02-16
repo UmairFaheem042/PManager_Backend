@@ -4,6 +4,12 @@ import axios from "axios";
 const AuthContext = createContext();
 
 export function AppProvider({ children }) {
+  const [isMobileDetailView, setIsMobileDetailView] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
   const [domains, setDomains] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDomain, setSelectedDomain] = useState("");
@@ -114,18 +120,30 @@ export function AppProvider({ children }) {
       setLoading(false);
     }
     fetchData();
-    // if (query === "") fetchAllDomains();
   }, [query]);
 
   useEffect(() => {
     fetchSelectedDomain();
   }, [selectedDomain]);
 
-  // console.log(domains);
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   return (
     <AuthContext.Provider
       value={{
+        isMobileDetailView,
+        setIsMobileDetailView,
         domains,
         setDomains,
         createDomain,
@@ -139,6 +157,7 @@ export function AppProvider({ children }) {
         searchDomain,
         setQuery,
         query,
+        windowSize
       }}
     >
       {children}
