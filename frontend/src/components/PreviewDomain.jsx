@@ -4,6 +4,8 @@ import { useAuth } from "../context/UserContext";
 
 const PreviewDomain = () => {
   const {
+    isEditing,
+    setIsEditing,
     selectedDomain,
     setSelectedDomain,
     previewDomain,
@@ -13,7 +15,7 @@ const PreviewDomain = () => {
     windowSize,
   } = useAuth();
 
-  const [isEditing, setIsEditing] = useState(false);
+  // const [isEditing, setIsEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [addTags, setAddTags] = useState(false);
 

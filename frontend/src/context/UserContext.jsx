@@ -16,6 +16,8 @@ export function AppProvider({ children }) {
   const [selectedDomain, setSelectedDomain] = useState("");
   const [previewDomain, setPreviewDomain] = useState(null);
 
+  const [isEditing, setIsEditing] = useState(false);
+
   const [query, setQuery] = useState("");
 
   const [loading, setLoading] = useState(true);
@@ -81,6 +83,7 @@ export function AppProvider({ children }) {
   async function fetchSelectedDomain() {
     if (!selectedDomain) return;
     try {
+      setIsEditing(false);
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/v1/domains/${selectedDomain}`,
         {
@@ -181,6 +184,8 @@ export function AppProvider({ children }) {
         domains,
         setDomains,
         getUser,
+        isEditing,
+        setIsEditing,
         createDomain,
         fetchAllDomains,
         deleteDomain,
