@@ -22,9 +22,12 @@ export function AppProvider({ children }) {
 
   async function getUser() {
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/users/", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/v1/users/`,
+        {
+          withCredentials: true,
+        }
+      );
       setUser(response.data.data);
     } catch (error) {
       console.log("Unable to fetch user");
@@ -38,7 +41,7 @@ export function AppProvider({ children }) {
     console.log("Data received in createDomain:", formDataToSend.entries());
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/domains/create",
+        `${import.meta.env.VITE_API_URL}/api/v1/domains/create`,
         formDataToSend,
         {
           withCredentials: true,
@@ -60,9 +63,12 @@ export function AppProvider({ children }) {
   async function fetchAllDomains() {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/domains", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/v1/domains`,
+        {
+          withCredentials: true,
+        }
+      );
       setDomains(response.data.allDomains.domains);
     } catch (error) {
       console.log("Unable to fetch domains", error.message);
@@ -76,7 +82,7 @@ export function AppProvider({ children }) {
     if (!selectedDomain) return;
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/v1/domains/${selectedDomain}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/domains/${selectedDomain}`,
         {
           withCredentials: true,
         }
@@ -93,7 +99,7 @@ export function AppProvider({ children }) {
     try {
       setLoading(true);
       const response = await axios.delete(
-        `http://localhost:3000/api/v1/domains/delete/${domainId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/domains/delete/${domainId}`,
         { withCredentials: true }
       );
       console.log("Domain deleted successfully");
@@ -110,7 +116,9 @@ export function AppProvider({ children }) {
     if (!selectedDomain) return;
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/v1/domains/update/${selectedDomain}`,
+        `${
+          import.meta.env.VITE_API_URL
+        }/api/v1/domains/update/${selectedDomain}`,
         updatedData,
         { withCredentials: true }
       );
@@ -125,7 +133,7 @@ export function AppProvider({ children }) {
   async function searchDomain() {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/v1/domains/search?query=${query}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/domains/search?query=${query}`,
         { withCredentials: true }
       );
       console.log(response.data.data);
