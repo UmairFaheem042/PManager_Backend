@@ -12,7 +12,7 @@ const HomePage = () => {
     <div className="flex flex-1 px-6 pb-6 ">
       <section className="border border-gray-200 bg-gray-50 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] rounded-xl p-2 flex-1 flex flex-col items-center justify-center gap-10 text-center">
         <h6 className="text-[0.85rem] lg:text-sm text-gray-400 border border-gray-300 rounded-full px-4 py-2">
-          Secure, Simple, and Smart Password Management
+        <i className="ri-lock-line"></i>{" "}Secure, Simple, and Smart Password Management
         </h6>
         <h1 className="lg:leading-16 text-4xl md:text-5xl lg:text-6xl font-bold">
           Your Passwords, Safe and <br /> Accessible Anytime

@@ -5,6 +5,7 @@ import AddDomain from "./AddDomain";
 
 const Sidebar = () => {
   const {
+    user,
     domains,
     selectedDomain,
     setSelectedDomain,
@@ -36,7 +37,7 @@ const Sidebar = () => {
     if (query !== "") searchDomain();
   }
 
-  if (loading)
+  if (loading && user)
     return (
       <div className="w-[250px] md:w-[300px] lg:w-[400px] pr-4 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-blue-600"></div>

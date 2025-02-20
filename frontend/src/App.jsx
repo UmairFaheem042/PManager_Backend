@@ -8,9 +8,11 @@ import SignIn from "./pages/SignIn";
 import { ToastContainer } from "react-toastify";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
+import Setting from "./pages/Setting";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -31,14 +33,14 @@ const App = () => {
           }
         />
 
-        <Route
+        {/* <Route
           path="/settings"
           element={
             <ProtectedRoute>
-              <div>Settings Page</div>
+              <Setting />
             </ProtectedRoute>
           }
-        />
+        /> */}
       </Routes>
       <ToastContainer />
     </div>

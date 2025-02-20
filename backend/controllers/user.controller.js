@@ -154,3 +154,27 @@ exports.signOut = async (req, res) => {
     });
   }
 };
+
+exports.getUser = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const isUser = await User.findById(id).select("-password -_id");
+    if (!isUser)
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+
+    res.status(200).json({
+      success: true,
+      message: "User fetched successfully",
+      data: isUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};

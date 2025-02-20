@@ -5,9 +5,9 @@ import Sidebar from "../components/Sidebar";
 import PreviewDomain from "../components/PreviewDomain";
 
 const Dashboard = () => {
-  const { loading, selectedDomain } = useAuth();
+  const { loading } = useAuth();
 
-  // if (loading) return <Loading />;
+  if (loading) return <Loading />;
   return (
     <div className="flex flex-1 px-6 pb-6 max-w-[1550px] w-full mx-auto">
       <main className={`flex-1 flex`}>

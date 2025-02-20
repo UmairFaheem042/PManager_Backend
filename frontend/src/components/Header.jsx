@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import logo from "/public/logo.png"
 
 const Header = () => {
   const { isAuthenticated, logout } = useAuth();
@@ -15,7 +16,7 @@ const Header = () => {
 
   const authNavigation = [
     { name: "Dashboard", href: "/" },
-    { name: "Settings", href: "/settings" },
+    // { name: "Settings", href: "/settings" },
     { name: "Sign Out", href: "/sign-in" },
   ];
 
@@ -31,8 +32,8 @@ const Header = () => {
       <nav className="max-w-[1550px] w-full mx-auto flex items-center justify-between p-6 lg:px-6 ">
         <div className="flex md:flex-1">
           <Link to={"/"}>
-            <h1>PManager</h1>
-            {/* <img src={logo} className="w-[100px]" alt="GatherPro" /> */}
+            {/* <h1>PManager</h1> */}
+            <img src={logo} className="w-[120px]" alt="GatherPro" />
           </Link>
         </div>
         <div className="flex md:hidden">

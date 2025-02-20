@@ -10,15 +10,31 @@ export function AppProvider({ children }) {
     height: window.innerHeight,
   });
 
+  const [user, setUser] = useState(null);
+
   const [domains, setDomains] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedDomain, setSelectedDomain] = useState("");
   const [previewDomain, setPreviewDomain] = useState(null);
+
   const [query, setQuery] = useState("");
-  // const [searchedDomain, setSearchedDomain] = useState()
+
+  const [loading, setLoading] = useState(true);
+
+  async function getUser() {
+    try {
+      const response = await axios.get("http://localhost:3000/api/v1/users/", {
+        withCredentials: true,
+      });
+      setUser(response.data.data);
+    } catch (error) {
+      console.log("Unable to fetch user");
+      console.log(error.message);
+    }
+  }
 
   async function createDomain(formDataToSend, setIsOpen) {
     setLoading(true);
+
     console.log("Data received in createDomain:", formDataToSend.entries());
     try {
       const response = await axios.post(
@@ -32,6 +48,7 @@ export function AppProvider({ children }) {
         }
       );
       console.log("Domain created successfully");
+      setSelectedDomain(response.data.domain._id);
       setIsOpen(false);
       await fetchAllDomains();
       setLoading(false);
@@ -41,14 +58,18 @@ export function AppProvider({ children }) {
   }
 
   async function fetchAllDomains() {
+    setLoading(true);
     try {
       const response = await axios.get("http://localhost:3000/api/v1/domains", {
         withCredentials: true,
       });
       setDomains(response.data.allDomains.domains);
     } catch (error) {
-      console.log("Unable to fetch domains", error);
+      console.log("Unable to fetch domains", error.message);
     }
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
   }
 
   async function fetchSelectedDomain() {
@@ -115,6 +136,10 @@ export function AppProvider({ children }) {
   }
 
   useEffect(() => {
+    getUser();
+  }, []);
+
+  useEffect(() => {
     async function fetchData() {
       await fetchAllDomains();
       setLoading(false);
@@ -138,26 +163,27 @@ export function AppProvider({ children }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-
   return (
     <AuthContext.Provider
       value={{
+        user,
+        windowSize,
         isMobileDetailView,
         setIsMobileDetailView,
         domains,
         setDomains,
+        getUser,
         createDomain,
         fetchAllDomains,
         deleteDomain,
         updateDomain,
         selectedDomain,
         setSelectedDomain,
-        previewDomain,
-        loading,
         searchDomain,
+        previewDomain,
         setQuery,
         query,
-        windowSize
+        loading,
       }}
     >
       {children}
